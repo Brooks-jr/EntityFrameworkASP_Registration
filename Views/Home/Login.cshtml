@@ -1,0 +1,25 @@
+@model firstEntityASP.Models.ValidateViewModel
+
+@{
+    if(ViewBag.Errors != null)
+    {
+        foreach(var error in ViewBag.Errors)
+        {
+        <p>@error</p>
+        }
+    }
+}
+
+<form action="Login" method="POST">
+
+    <label for="email">Email:</label>
+    <input asp-for="email" type="text" name="email">
+    <span asp-validation-for="email"></span>
+
+    <label for="password">Password:</label>
+    <input asp-for="password" type="password" name="password"><br>
+    <span asp-validation-for="password"></span>
+
+    <input type="submit" name="Login">
+
+</form>
