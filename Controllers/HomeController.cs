@@ -39,7 +39,7 @@ namespace firstEntityASP.Controllers
         }
 // ========================================================================================
 // ========================================================================================
-        
+
         [HttpPost]
         [Route("")]
         public IActionResult Index(ValidateViewModel model)
@@ -53,7 +53,7 @@ namespace firstEntityASP.Controllers
                     email = model.email,
                     created_at = DateTime.Now,
                     updated_at = DateTime.Now
-                    
+
                 };
                 PasswordHasher<Person> hasher = new PasswordHasher<Person>();
                 newUser.password = hasher.HashPassword(newUser, model.password);
@@ -66,17 +66,59 @@ namespace firstEntityASP.Controllers
             {
                 return View(model);
             }
-        }  
+        }
 // ========================================================================================
 // ========================================================================================
-        
+        [HttpPost]
+        [Route("Login")]
+        public IActionResult Login(string Email, string Password)
+        {
+            Person loginuser = _context.User.SingleOrDefault(user => user.email == Email);
+            List<string> errors = new List<string>();
+            if (loginuser == null)
+            {
+                errors.Add("Invalid Email");
+                ViewBag.Errors = errors;
+                return View();
+            }
+            else
+            {
+                PasswordHasher<Person> hasher = new PasswordHasher<Person>();
+                if (hasher.VerifyHashedPassword(loginuser, loginuser.password, Password) != 0)
+                {
+                    HttpContext.Session.SetInt32("currentUserId", loginuser.id);
+                    return RedirectToAction("Users");
+                }
+                else
+                {
+                    errors.Add("Invalid Password");
+                    ViewBag.Errors = errors;
+                    return View();
+                }
+            }
+        }
+// ========================================================================================
+// ========================================================================================
+
+        [HttpGet]
+        [Route("Login")]
+        public IActionResult Login()
+        {
+            return View();
+        }
+// ========================================================================================
+// ========================================================================================
+
         [HttpGet]
         [Route("Users")]
         public IActionResult Users()
         {
+            int? userId = HttpContext.Session.GetInt32("currentUserId");
+            Person currentUser = _context.User.SingleOrDefault(user => user.id == userId);
             List<Person> users = _context.User.OrderBy(user => user.firstName).ToList();
+            ViewBag.User = currentUser;
             ViewBag.Users = users;
-            return View("Users");
+            return View();
         }
 // ========================================================================================
 // ========================================================================================
@@ -119,7 +161,7 @@ namespace firstEntityASP.Controllers
         // ========================================================================================
         // SHOW ALL OBJECTS
         // ========================================================================================
-      
+
         // ========================================================================================
         // RETRIEVING OBJECT FORM DB
         // ========================================================================================
