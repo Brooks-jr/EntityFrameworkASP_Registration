@@ -51,6 +51,8 @@ namespace firstEntityASP.Controllers
                     firstName = model.firstName,
                     lastName = model.lastName,
                     email = model.email,
+                    created_at = DateTime.Now,
+                    updated_at = DateTime.Now
                     
                 };
                 PasswordHasher<Person> hasher = new PasswordHasher<Person>();
@@ -72,7 +74,7 @@ namespace firstEntityASP.Controllers
         [Route("Users")]
         public IActionResult Users()
         {
-            List<Person> users = _context.User.OrderByDescending(user => user.firstName).ToList();
+            List<Person> users = _context.User.OrderBy(user => user.firstName).ToList();
             ViewBag.Users = users;
             return View("Users");
         }
