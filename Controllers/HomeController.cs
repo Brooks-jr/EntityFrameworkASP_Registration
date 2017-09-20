@@ -7,6 +7,7 @@ using firstEntityASP.Models;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+ using Microsoft.AspNetCore.Session;
 // ========================================================================================
 // ========================================================================================
 
@@ -36,6 +37,14 @@ namespace firstEntityASP.Controllers
             List<Person> AllUsers = _context.User.ToList();
             ViewBag.Users = AllUsers;
             return View();
+        }
+
+
+        [HttpGet]
+        [Route("Back")]
+        public IActionResult Back()
+        {
+            return RedirectToAction("Index");
         }
 // ========================================================================================
 // ========================================================================================
@@ -69,9 +78,18 @@ namespace firstEntityASP.Controllers
         }
 // ========================================================================================
 // ========================================================================================
-        [HttpPost]
+        [HttpGet]
         [Route("Login")]
-        public IActionResult Login(string Email, string Password)
+        public IActionResult Login()
+        {
+            return View();
+        }
+// ========================================================================================
+// ========================================================================================
+
+        [HttpPost]
+        [Route("Get_User")]
+        public IActionResult Get_User(string Email, string Password)
         {
             Person loginuser = _context.User.SingleOrDefault(user => user.email == Email);
             List<string> errors = new List<string>();
@@ -79,7 +97,7 @@ namespace firstEntityASP.Controllers
             {
                 errors.Add("Invalid Email");
                 ViewBag.Errors = errors;
-                return View();
+                return View("Login");
             }
             else
             {
@@ -93,22 +111,14 @@ namespace firstEntityASP.Controllers
                 {
                     errors.Add("Invalid Password");
                     ViewBag.Errors = errors;
-                    return View();
+                    return View("Login");
                 }
             }
         }
 // ========================================================================================
 // ========================================================================================
 
-        [HttpGet]
-        [Route("Login")]
-        public IActionResult Login()
-        {
-            return View();
-        }
-// ========================================================================================
-// ========================================================================================
-
+        
         [HttpGet]
         [Route("Users")]
         public IActionResult Users()
@@ -123,7 +133,16 @@ namespace firstEntityASP.Controllers
 // ========================================================================================
 // ========================================================================================
 
-
+         
+        [HttpGet]
+        [Route("Logout")]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login");
+        }
+// ========================================================================================
+// ========================================================================================
 
 
 
