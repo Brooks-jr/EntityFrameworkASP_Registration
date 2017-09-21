@@ -11,7 +11,7 @@
 
 @{
     foreach(var user in ViewBag.Users){
-        <h3>Name: @user.firstName @user.lastName -- Email: @user.email</h3>
+        <h3>Name: @user.firstName @user.lastName -- Email: @user.email -- @user.created_at</h3>
     }
 }
 <!-- ======================================================================================== -->
